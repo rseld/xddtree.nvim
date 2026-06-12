@@ -1,6 +1,6 @@
 local Commands = {}
-local State = require("state")
-local UI = require("ui")
+local State = require("xddtree.state")
+local UI = require("xddtree.ui")
 
 local function toggle_tree()
   if State.open == false then
@@ -11,4 +11,5 @@ local function toggle_tree()
 end
 
 vim.keymap.set("n", "<leader>tt", toggle_tree, {})
+
 return Commands

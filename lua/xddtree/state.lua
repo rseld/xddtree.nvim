@@ -1,7 +1,7 @@
-local state = {
+local State = {
   open = false,
   windows = {},
   buffers = {},
 }
 
-return state
+return State

@@ -1,8 +1,9 @@
 local UI = {}
-local State = require("state")
+local State = require("xddtree.state")
 
 local function create_buf()
   local buf = vim.api.nvim_create_buf(false, true)
+  vim.bo[buf].bufhidden = "wipe"
   return buf
 end
 
@@ -14,7 +15,6 @@ local function open_float(buf, opts)
     width = opts.width,
     height = opts.height,
     style = "minimal",
-    border = "single",
   })
 end
 
@@ -22,6 +22,8 @@ function UI.open(opts)
   opts = opts or {}
   local width = opts.width or math.floor(vim.o.columns * 0.8)
   local height = opts.height or math.floor(vim.o.lines * 0.8)
+  local row = opts.row or math.floor((vim.o.lines - height) / 2)
+  local col = opts.col or math.floor((vim.o.columns - width) / 2)
 
   local top_h = height / 2
   local top_w = width
@@ -30,14 +32,14 @@ function UI.open(opts)
 
   local layout = {
     top = {
-      row = 0,
-      col = 0,
+      row = row,
+      col = col,
       width = top_w,
       height = top_h,
     },
     bot = {
-      row = top_h,
-      col = 0,
+      row = top_h + 5,
+      col = col,
       width = bot_w,
       height = bot_h,
     },
