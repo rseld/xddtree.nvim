@@ -1,11 +1,7 @@
 local UI = {}
-local State = require("xddtree.state")
 
-local function create_buf()
-  local buf = vim.api.nvim_create_buf(false, true)
-  vim.bo[buf].bufhidden = "wipe"
-  return buf
-end
+local state = require("xddtree.state")
+local marks = require("xddtree.marks")
 
 local function open_float(buf, opts)
   return vim.api.nvim_open_win(buf, true, {
@@ -45,24 +41,34 @@ function UI.open(opts)
     },
   }
 
-  State.buffers.top = create_buf()
-  State.buffers.bot = create_buf()
+  state.buffers.top = marks.create_buf()
+  local mark = vim.inspect(state.marks)
+  vim.api.nvim_buf_set_lines(state.buffers.top, 0, -1, false, vim.split(mark, "\n"))
+  state.buffers.bot = marks.create_buf()
 
-  State.windows.top = open_float(State.buffers.top, layout.top)
-  State.windows.bot = open_float(State.buffers.bot, layout.bot)
+  state.windows.top = open_float(state.buffers.top, layout.top)
+  state.windows.bot = open_float(state.buffers.bot, layout.bot)
 
-  State.open = true
+  state.open = true
 end
 
 function UI.close()
-  for _, win in pairs(State.windows) do
+  for _, win in pairs(state.windows) do
     if vim.api.nvim_win_is_valid(win) then
       vim.api.nvim_win_close(win, true)
     end
   end
-  State.windows = {}
-  State.buffers = {}
-  State.open = false
+  state.windows = {}
+  state.buffers = {}
+  state.open = false
+end
+
+function UI.toggle_tree()
+  if state.open == false then
+    UI.open()
+  else
+    UI.close()
+  end
 end
 
 return UI

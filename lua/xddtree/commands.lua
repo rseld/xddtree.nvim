@@ -1,15 +1,10 @@
 local Commands = {}
-local State = require("xddtree.state")
-local UI = require("xddtree.ui")
 
-local function toggle_tree()
-  if State.open == false then
-    UI.open()
-  else
-    UI.close()
-  end
-end
+local ui = require("xddtree.ui")
+local marks = require("xddtree.marks")
 
-vim.keymap.set("n", "<leader>tt", toggle_tree, {})
+vim.keymap.set("n", "<leader>tt", ui.toggle_tree, {})
+vim.keymap.set("n", "<leader>ma", marks.add, {})
+vim.keymap.set("n", "<leader>mr", marks.remove, {})
 
 return Commands
