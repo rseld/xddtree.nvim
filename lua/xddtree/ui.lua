@@ -11,20 +11,21 @@ local function open_float(buf, opts)
     width = opts.width,
     height = opts.height,
     style = "minimal",
+    border = "solid",
   })
 end
 
 function UI.open(opts)
   opts = opts or {}
-  local width = opts.width or math.floor(vim.o.columns * 0.8)
-  local height = opts.height or math.floor(vim.o.lines * 0.8)
+  local width = opts.width or math.floor(vim.o.columns * 0.6)
+  local height = opts.height or math.floor(vim.o.lines * 0.6)
   local row = opts.row or math.floor((vim.o.lines - height) / 2)
   local col = opts.col or math.floor((vim.o.columns - width) / 2)
 
-  local top_h = height / 2
-  local top_w = width
-  local bot_h = height - top_h
-  local bot_w = width
+  local top_h = math.floor(height / 2)
+  local top_w = math.floor(width)
+  local bot_h = math.floor(height - top_h)
+  local bot_w = math.floor(width)
 
   local layout = {
     top = {
@@ -34,7 +35,8 @@ function UI.open(opts)
       height = top_h,
     },
     bot = {
-      row = top_h + 5,
+      -- Reason for the arbitrary 3 is just to account for the padding introduced by window borders since I want a gap
+      row = row + top_h + 3,
       col = col,
       width = bot_w,
       height = bot_h,
@@ -42,8 +44,7 @@ function UI.open(opts)
   }
 
   state.buffers.top = marks.create_buf()
-  local mark = vim.inspect(state.marks)
-  vim.api.nvim_buf_set_lines(state.buffers.top, 0, -1, false, vim.split(mark, "\n"))
+  vim.api.nvim_buf_set_lines(state.buffers.top, 0, -1, false, state.marks)
   state.buffers.bot = marks.create_buf()
 
   state.windows.top = open_float(state.buffers.top, layout.top)

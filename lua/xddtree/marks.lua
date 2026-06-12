@@ -43,4 +43,12 @@ function Marks.remove(path)
   end
 end
 
+function Marks.jump(index)
+  local mark = state.marks[index]
+  if not mark then
+    return
+  end
+  vim.cmd("edit" .. mark)
+end
+
 return Marks
