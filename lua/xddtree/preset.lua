@@ -4,17 +4,34 @@ local Layout = require("xddtree.layout")
 function Preset.default_split(windows, opts)
   local opts = opts or {}
   local ratio = opts.ratio or 0.5
-  local W = vim.o.columns
-  local H = vim.o.lines
+  local scale_factor = opts.scale or 0.8
 
-  windows[1].row, windows[1].col = 0, 0
-  windows[1].width, windows[1].height = W * ratio, H * 0.5
+  local function scale(value, factor)
+    return math.floor(value * factor)
+  end
 
-  windows[2].row, windows[2].col = H * 0.5, 0
-  windows[2].width, windows[2].height = W * ratio, H * 0.5
+  local W = scale(vim.o.columns, scale_factor)
+  local H = scale(vim.o.lines, scale_factor)
 
-  windows[3].row, windows[3].col = 0, W * ratio
-  windows[3].width, windows[3].height = W * ratio, H
+  local col_offset = math.floor((vim.o.columns - W) / 2)
+  local row_offset = math.floor((vim.o.lines - H) / 2)
+  -- to keep vert window scaled even after lossy flooring
+  local floor_height = math.floor(H / 2)
+
+  windows[1].row = row_offset
+  windows[1].col = col_offset
+  windows[1].width = math.floor(W * ratio)
+  windows[1].height = floor_height
+
+  windows[2].row = row_offset + math.floor(H / 2)
+  windows[2].col = col_offset
+  windows[2].width = math.floor(W * ratio)
+  windows[2].height = floor_height
+
+  windows[3].row = row_offset
+  windows[3].col = col_offset + math.floor(W * ratio)
+  windows[3].width = math.floor(W * ratio)
+  windows[3].height = floor_height * 2
 
   local layout = Layout.new()
   for _, win in ipairs(windows) do
