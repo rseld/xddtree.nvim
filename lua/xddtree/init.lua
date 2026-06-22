@@ -11,9 +11,9 @@ end
 
 function M.open()
   layout = Preset.default_split({
-    Window.new({}),
-    Window.new({}),
-    Window.new({})
+    Window.new({ border = "single", title = "TL" }),
+    Window.new({ border = "single", title = "BL" }),
+    Window.new({ border = "single", title = "R" }),
   })
   layout:open()
 end

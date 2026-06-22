@@ -18,19 +18,23 @@ function Preset.default_split(windows, opts)
   -- to keep vert window scaled even after lossy flooring
   local floor_height = math.floor(H / 2)
 
+  local border = windows[1]:border_offset()
+
   windows[1].row = row_offset
   windows[1].col = col_offset
-  windows[1].width = math.floor(W * ratio)
-  windows[1].height = floor_height
+  windows[1].width = math.floor(W * ratio) - border
+  windows[1].height = floor_height - border
 
-  windows[2].row = row_offset + math.floor(H / 2)
+  windows[2].row = row_offset + math.floor(H / 2) + border
   windows[2].col = col_offset
-  windows[2].width = math.floor(W * ratio)
-  windows[2].height = floor_height
+  windows[2].width = math.floor(W * ratio) - border
+  windows[2].height = floor_height - border
 
   windows[3].row = row_offset
-  windows[3].col = col_offset + math.floor(W * ratio)
-  windows[3].width = math.floor(W * ratio)
+  windows[3].col = col_offset + math.floor(W * ratio) + border
+  windows[3].width = math.floor(W * ratio) - border
+  -- remember not to subtract border gap from right window height
+  -- may cause problems with alignment later
   windows[3].height = floor_height * 2
 
   local layout = Layout.new()

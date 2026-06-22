@@ -7,6 +7,8 @@ function Window.new(opts)
     col = opts.col,
     width = opts.width,
     height = opts.height,
+    title = opts.title or "",
+    border = opts.border or "none",
     bufnr = nil,
     winnr = nil,
     layout = nil,
@@ -22,6 +24,8 @@ function Window:open(enter)
     width = self.width,
     height = self.height,
     style = "minimal",
+    title = self.title,
+    border = self.border,
   })
 end
 
@@ -34,6 +38,13 @@ function Window:close()
     vim.api.nvim_buf_delete(self.bufnr, { force = true })
     self.bufnr = nil
   end
+end
+
+function Window:border_offset()
+  if not self.border or self.border == "none" then
+    return 0
+  end
+  return 1
 end
 
 return Window
