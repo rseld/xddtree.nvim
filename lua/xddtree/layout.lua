@@ -15,7 +15,7 @@ end
 
 function Layout:open()
   for _, win in ipairs(self.windows) do
-    win:open()
+    win:open(win.enter)
   end
   self.active = true
 end

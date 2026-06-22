@@ -1,3 +1,0 @@
-local Tree = {}
-
-return Tree
