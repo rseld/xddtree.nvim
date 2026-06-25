@@ -95,16 +95,17 @@ local function toggle_node(node, index)
   Tree:update()
 end
 
-vim.keymap.set("n", "<CR>", function()
-  local node = get_current_node()
-  local index = vim.api.nvim_win_get_cursor(0)[1]
-  toggle_node(node, index)
-end, { buffer = Tree.bufnr })
-
 function Tree.new()
   treeGraph.root = Utils.working_dir()
   local buf = vim.api.nvim_create_buf(false, true)
   build_nodes(treeGraph.root, 0)
+
+  vim.keymap.set("n", "<CR>", function()
+    local node = get_current_node()
+    local index = vim.api.nvim_win_get_cursor(0)[1]
+    toggle_node(node, index)
+  end, { buffer = buf })
+
   return setmetatable({ bufnr = buf }, { __index = Tree })
 end
 
