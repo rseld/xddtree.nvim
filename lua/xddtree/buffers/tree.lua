@@ -43,7 +43,7 @@ local function build_nodes(path, depth)
   end
 end
 
-local function render_tree(buf)
+local function render_tree()
   local prefixes = {
     directory = ">",
     file = "  ",
@@ -57,7 +57,7 @@ local function render_tree(buf)
     table.insert(lines, line)
   end
 
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  return lines
 end
 
 local function expand_node(node, index)
@@ -92,28 +92,29 @@ local function toggle_node(node, index)
   else
     expand_node(node, index)
   end
-
-  render_tree(0)
+  Tree:update()
 end
 
 vim.keymap.set("n", "<CR>", function()
   local node = get_current_node()
   local index = vim.api.nvim_win_get_cursor(0)[1]
   toggle_node(node, index)
-end, { buffer = 0 })
+end, { buffer = Tree.bufnr })
 
 function Tree.new()
   treeGraph.root = Utils.working_dir()
+  local buf = vim.api.nvim_create_buf(false, true)
   build_nodes(treeGraph.root, 0)
-  local bufnr = vim.api.nvim_create_buf(false, true)
-  render_tree(bufnr)
-  return setmetatable({ bufnr = bufnr }, { __index = Tree })
+  return setmetatable({ bufnr = buf }, { __index = Tree })
 end
 
---[[function Tree:update(tree)
-  vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, nil)
-end]] --
-
+function Tree:update()
+  if not treeGraph.nodes then
+    build_nodes(treeGraph.root, 0)
+  end
+  local lines = render_tree()
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+end
 
 -- TODO: don't throw away treeGraph if cwd has not changed
 function Tree:close()

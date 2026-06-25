@@ -20,6 +20,7 @@ function M.open()
     Window.new({ bufnr = tree.bufnr, enter = true, border = "single", title = " Tree " }),
   })
   layout:open()
+  tree:update()
 end
 
 function M.close()
