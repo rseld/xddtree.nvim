@@ -23,7 +23,7 @@ function M.open()
 
   layout = Preset.default_split({
     Window.new({ bufnr = marks.bufnr, border = "single", title = " Marks ", win_opts = { number = true } }),
-    Window.new({ bufnr = projects.bufnr, border = "single", title = " Projects " }),
+    Window.new({ bufnr = projects.bufnr, border = "single", title = " Projects ", win_opts = { number = true } }),
     Window.new({ bufnr = tree.bufnr, enter = true, border = "single", title = " Tree " }),
   })
   layout:open()
@@ -56,6 +56,10 @@ end
 
 function M.addproj()
   Projects.add()
+end
+
+function M.jump(index)
+  Marks.jump(index)
 end
 
 return M

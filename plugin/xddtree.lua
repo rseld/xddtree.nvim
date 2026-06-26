@@ -8,3 +8,9 @@ vim.api.nvim_create_user_command("LoadMarks", xddtree.load, {})
 
 vim.api.nvim_create_user_command("AddMark", xddtree.addmark, {})
 vim.api.nvim_create_user_command("AddProj", xddtree.addproj, {})
+
+for i = 1, 9 do
+  vim.keymap.set("n", "<leader>" .. i, function()
+    xddtree.jump(i)
+  end)
+end

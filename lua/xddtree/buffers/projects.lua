@@ -10,17 +10,10 @@ function Projects.new()
   return setmetatable({ bufnr = bufnr }, { __index = Projects })
 end
 
-local function current_dir()
-  local proj_dir = Util.working_dir()
-  if proj_dir ~= nil then
-    table.insert(projectTable, proj_dir)
-  end
-end
-
 local function is_listed(path)
-  path = path or current_dir()
-  for _, p in ipairs(projectTable) do
-    if p == path then
+  path = path or Util.current_dir()
+  for _, r in ipairs(projectTable) do
+    if r == path then
       return true
     end
   end
@@ -28,7 +21,7 @@ local function is_listed(path)
 end
 
 function Projects.add(path)
-  path = path or current_dir()
+  path = path or Util.current_dir()
   if path == "" then
     return
   end
@@ -39,7 +32,7 @@ function Projects.add(path)
 end
 
 function Projects.remove(path)
-  path = path or current_dir()
+  path = path or Util.current_dir()
   for i, p in ipairs(projectTable) do
     if p == path then
       table.remove(projectTable, i)
