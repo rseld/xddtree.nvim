@@ -18,8 +18,10 @@ end
 
 local Data = {}
 
-function Data.write_data(mark_list)
-  Path:new(data_path):write(vim.json.encode(mark_list), "w")
+function Data.write_data(mark_list, proj_list)
+  local marks = {}
+
+  Path:new(data_path):write(vim.json.encode(), "w")
 end
 
 function Data.read_data()
