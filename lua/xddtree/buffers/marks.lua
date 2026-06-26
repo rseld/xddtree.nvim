@@ -1,11 +1,11 @@
 local Marks = {}
 
-local state = require("xddtree.state")
+local markTable = {}
 
-function Marks.create_buf()
-  local buf = vim.api.nvim_create_buf(false, true)
-  vim.bo[buf].bufhidden = "wipe"
-  return buf
+function Marks.new()
+  local bufnr = vim.api.nvim_create_buf(false, true)
+  vim.bo[bufnr].bufhidden = "wipe"
+  return setmetatable({ bufnr = bufnr }, { __index = Marks })
 end
 
 local function current_file()
@@ -14,7 +14,7 @@ end
 
 local function is_marked(path)
   path = path or current_file()
-  for _, p in ipairs(state.marks) do
+  for _, p in ipairs(markTable) do
     if p == path then
       return true
     end
@@ -30,25 +30,29 @@ function Marks.add(path)
   if is_marked(path) then
     return
   end
-  table.insert(state.marks, path)
+  table.insert(markTable, path)
 end
 
 function Marks.remove(path)
   path = path or current_file()
-  for i, p in ipairs(state.marks) do
+  for i, p in ipairs(markTable) do
     if p == path then
-      table.remove(state.marks, i)
+      table.remove(markTable, i)
       return
     end
   end
 end
 
 function Marks.jump(index)
-  local mark = state.marks[index]
+  local mark = markTable[index]
   if not mark then
     return
   end
   vim.cmd("edit" .. mark)
+end
+
+function Marks:update()
+  vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, markTable)
 end
 
 return Marks

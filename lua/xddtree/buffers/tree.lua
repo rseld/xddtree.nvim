@@ -1,6 +1,7 @@
 local Utils = require("xddtree.utils")
 
 local Tree = {}
+Tree.__index = Tree
 
 local treeGraph = {
   root = nil,
@@ -45,7 +46,7 @@ end
 
 local function render_tree()
   local prefixes = {
-    directory = ">",
+    directory = "> ",
     file = "  ",
   }
 
@@ -53,7 +54,7 @@ local function render_tree()
   for _, node in ipairs(treeGraph.nodes) do
     local prefix = prefixes[node.type] or "? "
     local indent = string.rep("  ", node.depth)
-    local line = prefix .. indent .. node.name
+    local line = indent .. prefix .. node.name
     table.insert(lines, line)
   end
 
@@ -97,16 +98,16 @@ end
 
 function Tree.new()
   treeGraph.root = Utils.working_dir()
-  local buf = vim.api.nvim_create_buf(false, true)
+  local bufnr = vim.api.nvim_create_buf(false, true)
   build_nodes(treeGraph.root, 0)
 
   vim.keymap.set("n", "<CR>", function()
     local node = get_current_node()
     local index = vim.api.nvim_win_get_cursor(0)[1]
     toggle_node(node, index)
-  end, { buffer = buf })
+  end, { buffer = bufnr })
 
-  return setmetatable({ bufnr = buf }, { __index = Tree })
+  return setmetatable({ bufnr = bufnr }, { __index = Tree })
 end
 
 function Tree:update()
@@ -114,7 +115,8 @@ function Tree:update()
     build_nodes(treeGraph.root, 0)
   end
   local lines = render_tree()
-  vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+  local buf = vim.api.nvim_win_get_buf(0)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 end
 
 -- TODO: don't throw away treeGraph if cwd has not changed

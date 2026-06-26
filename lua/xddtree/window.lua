@@ -22,7 +22,7 @@ function Window:open(enter)
   if not self.bufnr then
     self.bufnr = vim.api.nvim_create_buf(false, true)
   end
-  self.winnr = vim.api.nvim_open_win(self.bufnr, enter or false, {
+  self.winnr = vim.api.nvim_open_win(self.bufnr, self.enter or false, {
     relative = "editor",
     row = self.row,
     col = self.col,
