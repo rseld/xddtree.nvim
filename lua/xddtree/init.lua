@@ -3,12 +3,14 @@ local Window = require("xddtree.window")
 local Tree = require("xddtree.buffers.tree")
 local Marks = require("xddtree.buffers.marks")
 local Data = require("xddtree.data")
+local Projects = require("xddtree.buffers.projects")
 
 local M = {}
 
 local layout = nil
 local tree = nil
 local marks = nil
+local projects = nil
 
 function M.setup(opts)
 
@@ -17,15 +19,17 @@ end
 function M.open()
   marks = Marks.new()
   tree = Tree.new()
+  projects = Projects.new()
 
   layout = Preset.default_split({
     Window.new({ bufnr = marks.bufnr, border = "single", title = " Marks ", win_opts = { number = true } }),
-    Window.new({ border = "single", title = " Projects " }),
+    Window.new({ bufnr = projects.bufnr, border = "single", title = " Projects " }),
     Window.new({ bufnr = tree.bufnr, enter = true, border = "single", title = " Tree " }),
   })
   layout:open()
   tree:update()
   marks:update()
+  projects:update()
 end
 
 function M.close()
@@ -46,8 +50,12 @@ function M.load()
   Data.read_data()
 end
 
-function M.add()
+function M.addmark()
   Marks.add()
+end
+
+function M.addproj()
+  Projects.add()
 end
 
 return M

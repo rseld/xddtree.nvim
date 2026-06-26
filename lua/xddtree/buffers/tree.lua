@@ -99,6 +99,7 @@ end
 function Tree.new()
   treeGraph.root = Utils.working_dir()
   local bufnr = vim.api.nvim_create_buf(false, true)
+  vim.bo[bufnr].bufhidden = "wipe"
   build_nodes(treeGraph.root, 0)
 
   vim.keymap.set("n", "<CR>", function()
@@ -121,7 +122,6 @@ end
 
 -- TODO: don't throw away treeGraph if cwd has not changed
 function Tree:close()
-  vim.api.nvim_buf_delete(self.bufnr, { force = true })
   treeGraph.nodes = {}
 end
 
