@@ -4,6 +4,7 @@ local Tree = require("xddtree.buffers.tree")
 local Marks = require("xddtree.buffers.marks")
 local Data = require("xddtree.data")
 local Projects = require("xddtree.buffers.projects")
+local Layout = require("xddtree.layout")
 
 local M = {}
 
@@ -42,6 +43,14 @@ function M.close()
   end
 end
 
+function M.toggle()
+  if not layout then
+    M.open()
+  else
+    M.close()
+  end
+end
+
 function M.save()
   Data.write_data()
 end
@@ -51,11 +60,11 @@ function M.load()
 end
 
 function M.addmark()
-  Marks.add()
+  Data.add_mark()
 end
 
 function M.addproj()
-  Projects.add()
+  Data.add_project()
 end
 
 function M.jump(index)

@@ -2,6 +2,9 @@ local xddtree = require("xddtree")
 
 vim.api.nvim_create_user_command("OpenLayout", xddtree.open, {})
 vim.api.nvim_create_user_command("CloseLayout", xddtree.close, {})
+vim.api.nvim_create_user_command("ToggleLayout", xddtree.toggle, {})
+
+vim.keymap.set("n", "<leader>tl", xddtree.toggle, {})
 
 vim.api.nvim_create_user_command("SaveMarks", xddtree.save, {})
 vim.api.nvim_create_user_command("LoadMarks", xddtree.load, {})
@@ -14,3 +17,9 @@ for i = 1, 9 do
     xddtree.jump(i)
   end)
 end
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    xddtree.load()
+  end
+})

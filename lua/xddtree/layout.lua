@@ -27,4 +27,12 @@ function Layout:close()
   self.active = false
 end
 
+function Layout:toggle_layout()
+  if self.active == false then
+    Layout:open()
+  else
+    Layout:close()
+  end
+end
+
 return Layout
