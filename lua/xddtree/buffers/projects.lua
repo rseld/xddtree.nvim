@@ -1,8 +1,8 @@
 local Util = require("xddtree.utils")
+local Data = require("xddtree.data")
+local data = Data.projects
 
 local Projects = {}
-
-local projectTable = {}
 
 function Projects.new()
   local bufnr = vim.api.nvim_create_buf(false, true)
@@ -10,39 +10,32 @@ function Projects.new()
   return setmetatable({ bufnr = bufnr }, { __index = Projects })
 end
 
-local function is_listed(path)
-  path = path or Util.current_dir()
-  for _, r in ipairs(projectTable) do
-    if r == path then
-      return true
-    end
-  end
-  return false
-end
-
-function Projects.add(path)
-  path = path or Util.current_dir()
-  if path == "" then
+function Projects.add()
+  local cwd = Util.working_dir()
+  if cwd == "" then
     return
   end
-  if is_listed(path) then
-    return
+  if not data[cwd] then
+    data[cwd] = {}
   end
-  table.insert(projectTable, path)
 end
 
 function Projects.remove(path)
   path = path or Util.current_dir()
-  for i, p in ipairs(projectTable) do
+  for i, p in ipairs(Projects) do
     if p == path then
-      table.remove(projectTable, i)
+      table.remove(Projects, i)
       return
     end
   end
 end
 
 function Projects:update()
-  vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, projectTable)
+  local lines = {}
+  for project, _ in pairs(data) do
+    table.insert(lines, project)
+  end
+  vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, lines)
 end
 
 return Projects
