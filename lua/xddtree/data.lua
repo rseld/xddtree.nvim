@@ -1,5 +1,4 @@
 local Path = require("plenary.path")
--- local Marks = require("xddtree.buffers.marks")
 
 local ensured_data_path = false
 local data_path = string.format("%s/marks.json", vim.fn.stdpath("data"))
@@ -20,16 +19,14 @@ local Data = {}
 
 Data.projects = {}
 
-function Data.write_data(mark_list)
-  Path:new(data_path):write(vim.json.encode(), "w")
+function Data.write_data()
+  Path:new(data_path):write(vim.json.encode(Data.projects), "w")
 end
 
 function Data.read_data()
   ensure_data_path()
-
   -- will eventually allow for a path to be specified or use default path
-  local path = data_path
-  -- Marks.markTable = vim.json.decode(Path:new(path):read())
+  Data.projects = vim.json.decode(Path:new(data_path):read())
 end
 
 return Data

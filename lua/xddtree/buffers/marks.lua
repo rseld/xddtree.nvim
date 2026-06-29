@@ -1,6 +1,5 @@
 local Util = require("xddtree.utils")
 local Data = require("xddtree.data")
-local data = Data.projects
 
 local Marks = {}
 
@@ -10,9 +9,9 @@ function Marks.new()
   return setmetatable({ bufnr = bufnr }, { __index = Marks })
 end
 
-local function is_marked(path)
-  path = path or Util.current_file()
-  for _, p in ipairs(Marks[cwd][path]) do
+local function is_marked(path, cwd)
+  local data = Data.projects
+  for _, p in ipairs(data[cwd]) do
     if p == path then
       return true
     end
@@ -21,10 +20,17 @@ local function is_marked(path)
 end
 
 function Marks.add(path)
+  local data = Data.projects
   local cwd = Util.working_dir()
   path = path or Util.current_file()
   if not cwd then
     return vim.print("Not in a project repo")
+  end
+  if not data[cwd] then
+    return vim.print("No marked project directory for file")
+  end
+  if is_marked(path, cwd) then
+    return vim.print("File already marked")
   end
   if data[cwd] then
     table.insert(data[cwd], path)
@@ -32,17 +38,21 @@ function Marks.add(path)
 end
 
 function Marks.remove(path)
+  local data = Data.projects
+  local cwd = Util.working_dir()
   path = path or Util.current_file()
-  for i, p in ipairs(Marks) do
+  for i, p in ipairs(data[cwd]) do
     if p == path then
-      table.remove(Marks[cwd][path], i)
+      table.remove(data[cwd], i)
       return
     end
   end
 end
 
 function Marks.jump(index)
-  local mark = Marks.path[index]
+  local data = Data.projects
+  local cwd = Util.working_dir()
+  local mark = data[cwd][index]
   if not mark then
     return
   end
@@ -50,6 +60,7 @@ function Marks.jump(index)
 end
 
 function Marks:update()
+  local data = Data.projects
   local cwd = Util.working_dir()
   if cwd ~= nil then
     local lines = {}

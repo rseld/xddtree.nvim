@@ -1,6 +1,5 @@
 local Util = require("xddtree.utils")
 local Data = require("xddtree.data")
-local data = Data.projects
 
 local Projects = {}
 
@@ -11,6 +10,7 @@ function Projects.new()
 end
 
 function Projects.add()
+  local data = Data.projects
   local cwd = Util.working_dir()
   if cwd == "" then
     return
@@ -20,17 +20,19 @@ function Projects.add()
   end
 end
 
-function Projects.remove(path)
-  path = path or Util.current_dir()
-  for i, p in ipairs(Projects) do
-    if p == path then
-      table.remove(Projects, i)
+function Projects.remove(cwd)
+  local data = Data.projects
+  cwd = cwd or Util.current_dir()
+  for i, p in ipairs(data) do
+    if p == cwd then
+      table.remove(data, i)
       return
     end
   end
 end
 
 function Projects:update()
+  local data = Data.projects
   local lines = {}
   for project, _ in pairs(data) do
     table.insert(lines, project)
