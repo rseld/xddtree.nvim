@@ -12,7 +12,6 @@ end
 local data = Data.get()
 local ensured_data_path = false
 local data_path = string.format("%s/marks.json", vim.fn.stdpath("data"))
-local cwd = Util.working_dir()
 
 local function ensure_data_path()
   if ensured_data_path then
@@ -27,6 +26,7 @@ local function ensure_data_path()
 end
 
 local function is_marked(path)
+  local cwd = Util.working_dir()
   for _, p in ipairs(data[cwd]) do
     if p == path then
       return true
@@ -46,6 +46,7 @@ function Data.read_data()
 end
 
 function Data.add_mark(path)
+  local cwd = Util.working_dir()
   path = path or Util.current_file()
   if not cwd then
     return vim.print("Not in a project repo")
@@ -62,6 +63,7 @@ function Data.add_mark(path)
 end
 
 function Data.remove_mark(path)
+  local cwd = Util.working_dir()
   path = path or Util.current_file()
   for i, p in ipairs(data[cwd]) do
     if p == path then
@@ -72,16 +74,18 @@ function Data.remove_mark(path)
 end
 
 function Data.add_project()
+  local cwd = Util.working_dir()
   if cwd == nil then
     return
   end
-  if not data[cwd] then
+  if data[cwd] == nil then
     data[cwd] = {}
   end
 end
 
-function Data.remove_project(cwd)
-  cwd = cwd or Util.current_dir()
+function Data.remove_project()
+  local cwd = Util.working_dir()
+  cwd = cwd or Util.working_dir()
   for i, p in ipairs(data) do
     if p == cwd then
       table.remove(data, i)

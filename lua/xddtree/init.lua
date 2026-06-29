@@ -4,7 +4,6 @@ local Tree = require("xddtree.buffers.tree")
 local Marks = require("xddtree.buffers.marks")
 local Data = require("xddtree.data")
 local Projects = require("xddtree.buffers.projects")
-local Layout = require("xddtree.layout")
 
 local M = {}
 
