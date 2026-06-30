@@ -9,7 +9,6 @@ function Data.get()
   return Data.projects
 end
 
-local data = Data.get()
 local ensured_data_path = false
 local data_path = string.format("%s/marks.json", vim.fn.stdpath("data"))
 
@@ -27,7 +26,7 @@ end
 
 local function is_marked(path)
   local cwd = Util.working_dir()
-  for _, p in ipairs(data[cwd]) do
+  for _, p in ipairs(Data.projects[cwd]) do
     if p == path then
       return true
     end
@@ -51,26 +50,28 @@ function Data.add_mark(path)
   if not cwd then
     return vim.print("Not in a project repo")
   end
-  if not data[cwd] then
+  if not Data.projects[cwd] then
     return vim.print("No marked project directory for file")
   end
   if is_marked(path) then
     return vim.print("File already marked")
   end
-  if data[cwd] then
-    table.insert(data[cwd], path)
+  if Data.projects[cwd] then
+    table.insert(Data.projects[cwd], path)
   end
+  return Data.projects
 end
 
 function Data.remove_mark(path)
   local cwd = Util.working_dir()
   path = path or Util.current_file()
-  for i, p in ipairs(data[cwd]) do
+  for i, p in ipairs(Data.projects[cwd]) do
     if p == path then
-      table.remove(data[cwd], i)
+      table.remove(Data.projects[cwd], i)
       return
     end
   end
+  return Data.projects
 end
 
 function Data.add_project()
@@ -78,20 +79,21 @@ function Data.add_project()
   if cwd == nil then
     return
   end
-  if data[cwd] == nil then
-    data[cwd] = {}
+  if Data.projects[cwd] == nil then
+    Data.projects[cwd] = {}
   end
 end
 
 function Data.remove_project()
   local cwd = Util.working_dir()
   cwd = cwd or Util.working_dir()
-  for i, p in ipairs(data) do
+  for i, p in ipairs(Data.projects) do
     if p == cwd then
-      table.remove(data, i)
+      table.remove(Data.projects, i)
       return
     end
   end
+  return Data.projects
 end
 
 return Data

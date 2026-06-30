@@ -11,7 +11,7 @@ end
 
 function Marks.jump(index)
   local cwd = Util.working_dir()
-  local data = Data.get() or {}
+  local data = Data.get()
   local mark = data[cwd][index]
   if not mark then
     return

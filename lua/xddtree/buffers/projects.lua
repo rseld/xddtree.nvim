@@ -9,12 +9,14 @@ function Projects.new()
 end
 
 function Projects:update()
-  local data = Data.get() or {}
-  local lines = {}
-  for project in pairs(data) do
-    table.insert(lines, project)
+  local data = Data.get()
+  if data then
+    local lines = {}
+    for project in pairs(data) do
+      table.insert(lines, project)
+    end
+    vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, lines)
   end
-  vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, lines)
 end
 
 return Projects
