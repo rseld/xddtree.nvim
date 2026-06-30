@@ -46,14 +46,14 @@ end
 
 local function render_tree()
   local prefixes = {
-    directory = "+",
+    directory = "+ ",
     file = "  ",
   }
   local lines = {}
   for _, node in ipairs(treeGraph.nodes) do
     local prefix = prefixes[node.type] or "? "
     if node.type == "directory" and node.is_open then
-      prefix = "-"
+      prefix = "- "
     end
     local indent = string.rep("  ", node.depth)
     local line = indent .. prefix .. node.name
