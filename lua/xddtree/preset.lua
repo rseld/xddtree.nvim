@@ -1,7 +1,8 @@
-local Preset = {}
 local Layout = require("xddtree.layout")
 
-function Preset.default_split(windows, opts)
+local Preset = {}
+
+function Preset.mark_layout(windows, opts)
   local opts = opts or {}
   -- ratio of the left side ui to the right side ui
   local ratio = opts.ratio or 0.4
@@ -44,6 +45,10 @@ function Preset.default_split(windows, opts)
     layout:register(win)
   end
   return layout
+end
+
+function Preset.project_dirs()
+
 end
 
 return Preset

@@ -1,17 +1,17 @@
 local Utils = require("xddtree.utils")
+local Preview = require("xddtree.buffers.preview")
 
 local Tree = {}
-Tree.__index = Tree
 
-local treeGraph = {
+Tree.treeGraph = {
   root = nil,
   nodes = {},
 }
 
-local function get_current_node()
+function Tree.get_current_node()
   --since nvim_win_get_cursor returns val as 0 indexed we need to conv between 0 and 1 index
   local line = vim.api.nvim_win_get_cursor(0)[1] - 1
-  return treeGraph.nodes[line + 1]
+  return Tree.treeGraph.nodes[line + 1]
 end
 
 local function scan_dir(path)
@@ -40,7 +40,7 @@ local function build_nodes(path, depth)
       is_open = false,
     }
 
-    table.insert(treeGraph.nodes, node)
+    table.insert(Tree.treeGraph.nodes, node)
   end
 end
 
@@ -50,7 +50,7 @@ local function render_tree()
     file = "  ",
   }
   local lines = {}
-  for _, node in ipairs(treeGraph.nodes) do
+  for _, node in ipairs(Tree.treeGraph.nodes) do
     local prefix = prefixes[node.type] or "? "
     if node.type == "directory" and node.is_open then
       prefix = "- "
@@ -74,20 +74,19 @@ local function expand_node(node, index)
       depth = node.depth + 1,
       is_open = false,
     }
-    table.insert(treeGraph.nodes, index + i, child_node)
+    table.insert(Tree.treeGraph.nodes, index + i, child_node)
   end
   node.is_open = true
 end
 
-
 local function collapse_node(node, index)
-  while treeGraph.nodes[index + 1] and treeGraph.nodes[index + 1].depth > node.depth do
-    table.remove(treeGraph.nodes, index + 1)
+  while Tree.treeGraph.nodes[index + 1] and Tree.treeGraph.nodes[index + 1].depth > node.depth do
+    table.remove(Tree.treeGraph.nodes, index + 1)
   end
   node.is_open = false
 end
 
-local function toggle_node(node, index)
+function Tree:toggle_node(node, index)
   if node.type ~= "directory" then return end
 
   if node.is_open then
@@ -95,36 +94,28 @@ local function toggle_node(node, index)
   else
     expand_node(node, index)
   end
-  Tree:update()
 end
 
 function Tree.new()
-  treeGraph.root = Utils.working_dir()
+  Tree.treeGraph.root = Utils.working_dir()
   local bufnr = vim.api.nvim_create_buf(false, true)
   vim.bo[bufnr].bufhidden = "wipe"
-  build_nodes(treeGraph.root, 0)
-
-  vim.keymap.set("n", "<CR>", function()
-    local node = get_current_node()
-    local index = vim.api.nvim_win_get_cursor(0)[1]
-    toggle_node(node, index)
-  end, { buffer = bufnr })
+  build_nodes(Tree.treeGraph.root, 0)
 
   return setmetatable({ bufnr = bufnr }, { __index = Tree })
 end
 
 function Tree:update()
-  if not treeGraph.nodes then
-    build_nodes(treeGraph.root, 0)
+  if not Tree.treeGraph.nodes then
+    build_nodes(Tree.treeGraph.root, 0)
   end
   local lines = render_tree()
-  local buf = vim.api.nvim_win_get_buf(0)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, lines)
 end
 
 -- TODO: don't throw away treeGraph if cwd has not changed
 function Tree:close()
-  treeGraph.nodes = {}
+  Tree.treeGraph.nodes = {}
 end
 
 return Tree
