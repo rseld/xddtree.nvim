@@ -2,6 +2,10 @@ local Layout = require("xddtree.layout")
 
 local Preset = {}
 
+local function scale(value, factor)
+  return math.floor(value * factor)
+end
+
 function Preset.mark_layout(windows, opts)
   local opts = opts or {}
   -- ratio of the left side ui to the right side ui
@@ -9,12 +13,10 @@ function Preset.mark_layout(windows, opts)
   -- scale of the entire set of windows
   local scale_factor = opts.scale or 0.8
 
-  local function scale(value, factor)
-    return math.floor(value * factor)
-  end
-
   local W = scale(vim.o.columns, scale_factor)
   local H = scale(vim.o.lines, scale_factor)
+
+
 
   local col_offset = math.floor((vim.o.columns - W) / 2)
   local row_offset = math.floor((vim.o.lines - H) / 2)
@@ -47,8 +49,27 @@ function Preset.mark_layout(windows, opts)
   return layout
 end
 
-function Preset.project_dirs()
+function Preset.project_dirs(windows, opts)
+  local opts = opts or {}
 
+  local scale_factor = opts.scale or 0.4
+
+  local W = scale(vim.o.columns, scale_factor)
+  local H = scale(vim.o.lines, scale_factor)
+
+  local col_offset = math.floor((vim.o.columns - W) / 2)
+  local row_offset = math.floor((vim.o.lines - H) / 2)
+
+  windows[1].row = row_offset
+  windows[1].col = col_offset
+  windows[1].width = math.floor(W)
+  windows[1].height = math.floor(H)
+
+  local layout = Layout.new()
+  for _, win in ipairs(windows) do
+    layout:register(win)
+  end
+  return layout
 end
 
 return Preset

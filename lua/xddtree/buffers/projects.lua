@@ -43,7 +43,7 @@ function Projects:update()
     for project in pairs(data) do
       table.insert(lines, project)
     end
-    vim.api.nvim_buf_set_lines(Projects.bufnr, 0, -1, false, lines)
+    vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, lines)
   end
 end
 

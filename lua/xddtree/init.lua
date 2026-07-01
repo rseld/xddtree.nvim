@@ -44,17 +44,35 @@ function M.open()
   tree:update()
 end
 
+function M.proj_dirs()
+  local projects = Projects.new()
+
+  layout = Preset.project_dirs({
+    Window.new({ bufnr = projects.bufnr, border = "single", title = " Projects ", win_opts = { number = true } }),
+  })
+  layout:open()
+  projects:update()
+end
+
 function M.close()
   if layout then
     layout:close()
     layout = nil
+    Tree:close()
   end
-  Tree:close()
 end
 
-function M.toggle()
+function M.toggle_layout()
   if not layout then
     M.open()
+  else
+    M.close()
+  end
+end
+
+function M.toggle_proj()
+  if not layout then
+    M.proj_dirs()
   else
     M.close()
   end
