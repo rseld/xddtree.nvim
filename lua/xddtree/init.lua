@@ -22,12 +22,16 @@ function M.open()
   local tree = Tree.new(cwd)
   local preview = Preview.new()
 
+  vim.keymap.set("n", "<ESC><ESC>", function()
+    M.close()
+  end, { buf = tree.bufnr })
+
   vim.keymap.set("n", "<CR>", function()
     local node = Tree.get_current_node()
     local index = vim.api.nvim_win_get_cursor(0)[1]
     tree:toggle_node(node, index)
     tree:update()
-  end, { buffer = tree.bufnr })
+  end, { buf = tree.bufnr })
 
   vim.api.nvim_create_autocmd("CursorMoved", {
     buffer = tree.bufnr,
@@ -50,10 +54,15 @@ end
 function M.proj_dirs()
   local projects = Projects.new()
 
+  vim.keymap.set("n", "<ESC><ESC>", function()
+    M.close()
+  end, { buf = projects.bufnr })
+
   vim.keymap.set("n", "<CR>", function()
     local node = Projects.get_current_node()
     projects:set_cwd(node)
-  end, { buffer = projects.bufnr })
+    M.close()
+  end, { buf = projects.bufnr })
 
   layout = Preset.project_dirs({
     Window.new({ bufnr = projects.bufnr, enter = true, border = "single", title = " Projects ", win_opts = { number = true } }),
@@ -67,6 +76,7 @@ function M.close()
     layout:close()
     layout = nil
     Tree:close()
+    Projects:close()
   end
 end
 
