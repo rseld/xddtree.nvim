@@ -1,11 +1,10 @@
 local Preview = {}
-
 Preview.__index = Preview
 
 function Preview.new()
   local bufnr = vim.api.nvim_create_buf(false, true)
   vim.bo[bufnr].bufhidden = "wipe"
-  return setmetatable({ bufnr = bufnr }, { __index = Preview })
+  return setmetatable({ bufnr = bufnr }, Preview)
 end
 
 function Preview:create_preview(node)

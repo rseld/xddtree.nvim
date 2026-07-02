@@ -2,6 +2,7 @@ local Utils = require("xddtree.utils")
 local Preview = require("xddtree.buffers.preview")
 
 local Tree = {}
+Tree.__index = Tree
 
 Tree.treeGraph = {
   root = nil,
@@ -102,7 +103,7 @@ function Tree.new(root)
   vim.bo[bufnr].bufhidden = "wipe"
   build_nodes(Tree.treeGraph.root, 0)
 
-  return setmetatable({ bufnr = bufnr }, { __index = Tree })
+  return setmetatable({ bufnr = bufnr }, Tree)
 end
 
 function Tree:update()
@@ -110,7 +111,9 @@ function Tree:update()
     build_nodes(Tree.treeGraph.root, 0)
   end
   local lines = render_tree()
+  vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
   vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, lines)
+  vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
 end
 
 -- TODO: don't throw away treeGraph if cwd has not changed

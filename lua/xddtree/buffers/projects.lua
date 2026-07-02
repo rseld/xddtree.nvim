@@ -1,7 +1,7 @@
 local Data = require("xddtree.data")
-local Util = require("xddtree.utils")
 
 local Projects = {}
+Projects.__index = Projects
 
 Projects.projectGraph = {
   project = {},
@@ -27,17 +27,18 @@ function Projects.new()
   local bufnr = vim.api.nvim_create_buf(false, true)
   vim.bo[bufnr].bufhidden = "wipe"
   build_nodes()
-  return setmetatable({ bufnr = bufnr }, { __index = Projects })
+  return setmetatable({ bufnr = bufnr }, Projects)
 end
 
-function Projects:update()
-  local data = Data.get()
+function Projects:update(data)
   if data then
     local lines = {}
     for project in pairs(data) do
       table.insert(lines, project)
     end
+    vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
     vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, lines)
+    vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
   end
 end
 

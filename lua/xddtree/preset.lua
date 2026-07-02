@@ -9,7 +9,7 @@ end
 function Preset.mark_layout(windows, opts)
   local opts = opts or {}
   -- ratio of the left side ui to the right side ui
-  local ratio = opts.ratio or 0.4
+  local ratio = opts.ratio or 0.5
   -- scale of the entire set of windows
   local scale_factor = opts.scale or 0.8
 

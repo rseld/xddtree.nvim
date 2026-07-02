@@ -17,6 +17,7 @@ end
 
 function M.open()
   local cwd = Utils.working_dir()
+  local data = Data.get()
 
   local mark = Marks.new()
   local tree = Tree.new(cwd)
@@ -47,11 +48,12 @@ function M.open()
     Window.new({ bufnr = preview.bufnr, border = "single", title = " Preview " }),
   })
   layout:open()
-  mark:update()
+  mark:update(cwd, data)
   tree:update()
 end
 
 function M.proj_dirs()
+  local data = Data.get()
   local projects = Projects.new()
 
   vim.keymap.set("n", "<ESC><ESC>", function()
@@ -68,7 +70,7 @@ function M.proj_dirs()
     Window.new({ bufnr = projects.bufnr, enter = true, border = "single", title = " Projects ", win_opts = { number = true } }),
   })
   layout:open()
-  projects:update()
+  projects:update(data)
 end
 
 function M.close()
@@ -113,7 +115,9 @@ function M.addproj()
 end
 
 function M.jump(index)
-  Marks.jump(index)
+  local cwd = Utils.working_dir()
+  local data = Data.get()
+  Marks.jump(cwd, data, index)
 end
 
 function M.pwd()

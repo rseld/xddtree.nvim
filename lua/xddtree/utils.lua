@@ -14,7 +14,9 @@ function Utils.current_dir()
 end
 
 function Utils.current_file()
-  return vim.api.nvim_buf_get_name(0)
+  local abs_path = vim.api.nvim_buf_get_name(0)
+  local path = vim.fn.fnamemodify(abs_path, ":.")
+  return path
 end
 
 function Utils.show_dirs()

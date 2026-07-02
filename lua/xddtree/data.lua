@@ -4,6 +4,7 @@ local Util = require("xddtree.utils")
 local Data = {}
 
 Data.projects = {}
+Data.__index = Data
 
 function Data.get()
   return Data.projects
