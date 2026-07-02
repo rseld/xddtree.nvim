@@ -47,8 +47,13 @@ end
 function M.proj_dirs()
   local projects = Projects.new()
 
+  vim.keymap.set("n", "<CR>", function()
+    local node = Projects.get_current_node()
+    projects:set_cwd(node)
+  end, { buffer = projects.bufnr })
+
   layout = Preset.project_dirs({
-    Window.new({ bufnr = projects.bufnr, border = "single", title = " Projects ", win_opts = { number = true } }),
+    Window.new({ bufnr = projects.bufnr, enter = true, border = "single", title = " Projects ", win_opts = { number = true } }),
   })
   layout:open()
   projects:update()
