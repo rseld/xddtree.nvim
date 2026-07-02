@@ -10,6 +10,11 @@ end
 function Preview:create_preview(node)
   if node.type ~= "file" then return end
 
+  local ft = vim.filetype.match({ filename = node.path })
+  if ft ~= false then
+    vim.bo[self.bufnr].filetype = ft
+    vim.bo[self.bufnr].syntax = "ON"
+  end
   local lines = vim.fn.readfile(node.path)
 
   vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
