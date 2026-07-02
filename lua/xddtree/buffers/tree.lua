@@ -96,8 +96,8 @@ function Tree:toggle_node(node, index)
   end
 end
 
-function Tree.new()
-  Tree.treeGraph.root = Utils.working_dir()
+function Tree.new(root)
+  Tree.treeGraph.root = root
   local bufnr = vim.api.nvim_create_buf(false, true)
   vim.bo[bufnr].bufhidden = "wipe"
   build_nodes(Tree.treeGraph.root, 0)

@@ -45,6 +45,7 @@ function Projects:close()
   Projects.projectGraph.project = {}
 end
 
+-- Note: I have telescope look in global working dir for files which is what motivates setting global
 function Projects:set_cwd(node)
   if not node then
     return vim.print("Invalid project directory")

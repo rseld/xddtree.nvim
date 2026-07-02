@@ -5,6 +5,7 @@ local Marks    = require("xddtree.buffers.marks")
 local Data     = require("xddtree.data")
 local Projects = require("xddtree.buffers.projects")
 local Preview  = require("xddtree.buffers.preview")
+local Utils    = require("xddtree.utils")
 
 local M        = {}
 
@@ -15,8 +16,10 @@ function M.setup(opts)
 end
 
 function M.open()
+  local cwd = Utils.working_dir()
+
   local mark = Marks.new()
-  local tree = Tree.new()
+  local tree = Tree.new(cwd)
   local preview = Preview.new()
 
   vim.keymap.set("n", "<CR>", function()
@@ -101,6 +104,10 @@ end
 
 function M.jump(index)
   Marks.jump(index)
+end
+
+function M.pwd()
+  Utils.show_dirs()
 end
 
 return M

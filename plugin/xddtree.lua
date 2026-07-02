@@ -26,3 +26,5 @@ vim.api.nvim_create_autocmd("VimEnter", {
     xddtree.load()
   end
 })
+
+vim.api.nvim_create_user_command("PrintWD", xddtree.pwd, {})
