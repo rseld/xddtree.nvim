@@ -12,7 +12,7 @@ function Marks.jump(cwd, data, index)
   if not mark then
     return
   end
-  vim.cmd("edit" .. mark)
+  vim.cmd.edit(mark)
 end
 
 function Marks:update(cwd, data)
